@@ -4,6 +4,7 @@ import com.example.employeecrudapplication.model.Employee;
 import com.example.employeecrudapplication.repository.EmployeeRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class EmployeeController {
   }
 
   @PutMapping(value = "update/{id}")
-  public String updateUser(@PathVariable long id, @RequestBody Employee employee) {
+  public String updateEmployee(@PathVariable long id, @RequestBody Employee employee) {
     Employee updatedEmployee = employeeRepository.findById(id).get();
     updatedEmployee.setFirstName(employee.getFirstName());
     updatedEmployee.setLastName(employee.getLastName());
@@ -52,6 +53,13 @@ public class EmployeeController {
     updatedEmployee.setDepartment(employee.getDepartment());
     employeeRepository.save(updatedEmployee);
     return "Updated Employee Details.";
+  }
+
+  @DeleteMapping(value = "/delete/{id}")
+  public String deleteEmployee(@PathVariable long id) {
+    Employee deleteEmployee = employeeRepository.findById(id).get();
+    employeeRepository.delete(deleteEmployee);
+    return "Deleted Employee with the ID: " + id;
   }
 
 }
