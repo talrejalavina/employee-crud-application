@@ -1,7 +1,7 @@
 package com.example.employeecrudapplication.controller;
 
 import com.example.employeecrudapplication.model.Employee;
-import com.example.employeecrudapplication.repository.EmployeeRepository;
+import com.example.employeecrudapplication.service.EmployeeService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 public class EmployeeController {
 
   @Autowired
-  private EmployeeRepository employeeRepository;
+  private EmployeeService employeeService;
 
   @GetMapping(value = "/")
   public String getPage() {
@@ -28,38 +28,27 @@ public class EmployeeController {
 
   @PostMapping(value = "/save")
   public String createEmployee(@RequestBody Employee employee) {
-    employeeRepository.save(employee);
-    return "New Employee Added.";
+    return employeeService.createEmployee(employee);
   }
 
   @GetMapping(value = "/employees")
   public List<Employee> getAllEmployees() {
-    return employeeRepository.findAll();
+    return employeeService.getAllEmployees();
   }
 
   @GetMapping("/{id}")
   public Employee getEmployeeById(@PathVariable long id) {
-    return employeeRepository.findById(id).orElseGet(() -> null);
+    return employeeService.getEmployeeById(id);
   }
 
   @PutMapping(value = "update/{id}")
   public String updateEmployee(@PathVariable long id, @RequestBody Employee employee) {
-    Employee updatedEmployee = employeeRepository.findById(id).get();
-    updatedEmployee.setFirstName(employee.getFirstName());
-    updatedEmployee.setLastName(employee.getLastName());
-    updatedEmployee.setEmail(employee.getEmail());
-    updatedEmployee.setPhone(employee.getPhone());
-    updatedEmployee.setTitle(employee.getTitle());
-    updatedEmployee.setDepartment(employee.getDepartment());
-    employeeRepository.save(updatedEmployee);
-    return "Updated Employee Details.";
+    return employeeService.updateEmployee(id, employee);
   }
 
   @DeleteMapping(value = "/delete/{id}")
   public String deleteEmployee(@PathVariable long id) {
-    Employee deleteEmployee = employeeRepository.findById(id).get();
-    employeeRepository.delete(deleteEmployee);
-    return "Deleted Employee with the ID: " + id;
+    return employeeService.deleteEmployee(id);
   }
 
 }
